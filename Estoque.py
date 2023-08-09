@@ -78,4 +78,3 @@ novo_status = input("Novo status: ")
 #estoque_atualizado(ID_Produto)
 
 atualizar_status(ID_Produto, novo_status)
-#sexo anal
