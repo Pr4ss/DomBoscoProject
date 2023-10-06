@@ -1,7 +1,6 @@
 import mysql.connector
 from mysql.connector import errorcode
 
-
 cnx = mysql.connector.connect(user='cshpco98_viquetti',
                                   database='cshpco98_estoque',
                                   password = 'Bananaverde333@',
