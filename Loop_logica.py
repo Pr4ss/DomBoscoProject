@@ -1,11 +1,8 @@
 import mysql.connector
 from mysql.connector import errorcode
+from bd import conectarbanco
 
-cnx = mysql.connector.connect(user='cshpco98_viquetti',
-                                  database='cshpco98_estoque',
-                                  password = 'Bananaverde333@',
-                                  host = 'cshp.com.br')
-
+conectarbanco()
 
 def desconectarbanco(): 
   cnx.close()
