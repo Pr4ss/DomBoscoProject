@@ -15,5 +15,3 @@ def conectarbanco():
       print("Database does not exist")
     else:
       print(err)
-  else:
-    cnx.close()
