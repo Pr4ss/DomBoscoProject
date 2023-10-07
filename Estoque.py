@@ -12,6 +12,7 @@ def PuxarEstoqueML(ID_Produto):
     resposta = requests.get(url)
     dados_produto = resposta.json()
     EstoqueML = dados_produto["initial_quantity"]
+    return EstoqueML
 
 def AtualizarEstoqueML(ID_Produto, novo_estoque):
     url = f"https://api.mercadolibre.com/items/{ID_Produto}"
