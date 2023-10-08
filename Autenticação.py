@@ -1,6 +1,7 @@
 import requests
 
 # Dados do seu aplicativo do Mercado Livre
+
 client_id = 6879509485276765
 client_secret = "t3TezoMpOAnhJfIhXWnK7cJ2f2ryUl6o"
 redirect_uri = "https://localhost:3000/"
