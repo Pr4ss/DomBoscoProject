@@ -1,8 +1,16 @@
 import mysql.connector
 from mysql.connector import errorcode
-from bd import conectarbanco
+from Estoque import PuxarEstoqueML
 
-conectarbanco()
+
+
+
+
+cnx = mysql.connector.connect(user='cshpco98_viquetti',
+                                  database='cshpco98_estoque',
+                                  password = 'Bananaverde333@',
+                                  host = 'cshp.com.br')
+
 
 def desconectarbanco(): 
   cnx.close()
@@ -12,55 +20,38 @@ def consulta():
 
   cursor = cnx.cursor()
 
-  consulta_id = "SELECT `id_banco`, `quantidade`FROM `estoque`" #consulta os valores do banco de dados para bater com os que vem da API do ML
+
+  consulta_id = "SELECT `id_banco`, `quantidade`, `id_mercadolivre` FROM `estoque`" #consulta os valores do banco de dados para bater com os que vem da API do ML
+  dicionarios = []
+  cursor.execute(consulta_id)
+  produtos_bd = cursor.fetchall()
+
+  for tupla in produtos_bd:
+    novo_dicionario = {
+        "id_banco": tupla[0],
+        "quantidade": tupla[1],
+        "id_mercadolivre": tupla[2]
+    }
+    dicionarios.append(novo_dicionario)
   
 
-  cursor.execute(consulta_id)
 
-  # Buscar todos os dados no banco de ados
-  produtos_bd = cursor.fetchall()
-  print(produtos_bd)
-  # Exemplo de dados do estoque por enquanto está os valores de exemplo em uma lista, mas serão os dados coletados da API do ML.
-  estoque = [
-      {"nome": "martelo", "quantidade":50,"id": 1},
-      {"nome": "Touca", "quantidade": 50,'id': 3}
-      # ...
-  ]
+  for item in dicionarios:
+    quantidade_bd = item["quantidade"]
+    id_mercadolivre = item["id_mercadolivre"]
+    id_banco = item["id_banco"]
+    EstoqueML = PuxarEstoqueML(id_mercadolivre)
+    PuxarEstoqueML(id_mercadolivre)
+    
 
-  # Loop for para comparar e atualizar quantidades
-  for produto_estoque in estoque:
-      id_produto_estoque = produto_estoque["id"]
-      quantidade_estoque = produto_estoque["quantidade"]
-     
-
-      # Encontrar o produto correspondente no banco de dados comparando o ID, (mais pra frente vai ter uma lógica para bater com o ID do ML)
-      produto_bd = None
-      for item in produtos_bd:
-          if item[0] == id_produto_estoque:
-              produto_bd = item
-              break
+    if EstoqueML != quantidade_bd:
+      novo_estoque = quantidade_bd - EstoqueML
+      novo_estoque = abs(novo_estoque - quantidade_bd)
+      consulta_atualizacao = f"UPDATE `estoque` SET `quantidade` = {novo_estoque} WHERE `id_banco` = {id_banco}"
+      cursor.execute(consulta_atualizacao)
+      cnx.commit()
       
-      
-      if produto_bd:
-          id_banco = produto_bd[0]
-          quantidade_bd = produto_bd[1]
-          
-          if quantidade_bd != quantidade_estoque:
-              # Calcular a nova quantidade no banco de dados alterando o valor para o valor que vem do ML
-              nova_quantidade = quantidade_estoque
-              
-              # Atualizar a quantidade no banco de dados dando um UPDATE que vai para o banco
-              consulta_atualizacao = f"UPDATE `estoque` SET `quantidade` = {nova_quantidade} WHERE `id_banco` = {id_banco}"
-              cursor.execute(consulta_atualizacao)
-              cnx.commit()
-              
-              print(f"Quantidade atualizada para o produto {produto_bd} de ID: {id_banco}: {nova_quantidade}")
-      else:
-          print(f"Produto com ID {id_produto_estoque} não encontrado no banco de dados.")
-
-  # Fechar o cursor e a conexão com o banco de dados
-
-
+    
 consulta()
 
 desconectarbanco()
