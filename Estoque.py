@@ -93,10 +93,6 @@ def atualizar_estoque(ID_Produto, novo_estoque):
 
 ID_Produto = "MLB3470037325"
 novo_estoque = 13
-#ID_Vendedor = input("ID do vendedor: ")
-           
-#AtualizarEstoqueML_ComVariacao(ID_Produto, novo_estoque)
-#AtualizarEstoqueML(ID_Produto, novo_estoque)
-#PuxarEstoqueML(ID_Produto)
 
-atualizar_estoque(ID_Produto, novo_estoque)
+#PuxarEstoqueML(ID_Produto)
+#atualizar_estoque(ID_Produto, novo_estoque)
