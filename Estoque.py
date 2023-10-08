@@ -5,7 +5,7 @@ import json
 client_id = 6879509485276765
 client_secret = "t3TezoMpOAnhJfIhXWnK7cJ2f2ryUl6o"
 redirect_uri = "https://localhost:3000/"
-access_token = "APP_USR-6879509485276765-100616-a26391450f7e0e40156a79c8d4b12e72-323433124"
+access_token = "APP_USR-6879509485276765-100812-fa64bc013100d27aecf8d18a777f913c-323433124"
 
 def PuxarEstoqueML(ID_Produto):
     url = f"https://api.mercadolibre.com/items/{ID_Produto}"
@@ -34,42 +34,47 @@ def AtualizarEstoqueML(ID_Produto, novo_estoque):
 def AtualizarEstoqueML_ComVariacao(ID_Produto, novo_estoque):
     url = f"https://api.mercadolibre.com/items/{ID_Produto}"
     resposta = requests.get(url)
+    
+    if resposta.status_code != 200:
+        print(f"Não foi possível obter os dados do produto ID {ID_Produto}")
+        return
+    
     dados_produto = resposta.json()
     variations = dados_produto.get("variations")
-    quant_variations = len(variations)
-    print(variations)
+    
+    if not variations:
+        print("Não há variações para atualizar.")
+        return
 
-    if resposta.status_code == 200:
-        url = f"https://api.mercadolibre.com/items/{ID_Produto}/relist"
-        listing_type_id = dados_produto.get("listing_type_id")
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json"
+    listing_type_id = dados_produto.get("listing_type_id")
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+    
+    updated_variations = []
+    
+    for variation in variations:
+        id = variation["id"]
+        price = variation["price"]
+        updated_variation = {
+            "available_quantity": novo_estoque,
+            "id": id
         }
-        for variation in variations:
-            id = variation["id"]
-            price = variation["price"]
-            data = {
-                "listing_type_id": listing_type_id,
-                "variations": [
-                    {
-                        "id": id,
-                        "price": price,
-                        "quantity": novo_estoque
-                    }
-                ]
-            }
-            url = f"https://api.mercadolibre.com/items/{id}"
-            resposta = requests.put(url, headers=headers, json=data)
-            print(id)
-            if resposta.status_code == 201:
-                print("Produto do ID {id} foi atualizado com sucesso!")
-            else:
-                print(f"Erro ao criar o anúncio. Status Code: {resposta.status_code}")
-                print("Mensagem de Erro:", resposta.json())
-        #return ID_Produto
+        updated_variations.append(updated_variation)
+    
+    data = {
+        "variations": updated_variations
+    }
+
+    url = f"https://api.mercadolibre.com/items/{ID_Produto}"
+    resposta = requests.put(url, headers=headers, json=data)
+
+    if resposta.status_code == 200 or resposta.status_code == 201:
+        print(f"Estoque de todas as variações atualizado com sucesso!")
     else:
-        print(f"Não foi possível obter os dados do produto ID {ID_Produto}")
+        print(f"Erro ao atualizar o estoque. Status Code: {resposta.status_code}")
+        print("Mensagem de Erro:", resposta.json())
 
 def atualizar_estoque(ID_Produto, novo_estoque):
     url = f"https://api.mercadolibre.com/items/{ID_Produto}"
@@ -80,14 +85,14 @@ def atualizar_estoque(ID_Produto, novo_estoque):
         FecharAnuncioML(ID_Produto)
         upd_NoSales_NoVariations(ID_Produto, novo_estoque)
 
-ID_Produto = "MLB3470037325"
-novo_estoque = int(27)
+ID_Produto = "MLB4102962668"
+novo_estoque = 10
 #novo_status = input("Novo status: ")
 #ID_Vendedor = input("ID do vendedor: ")
            
-#AtualizarEstoqueML_ComVariacao(ID_Produto, novo_estoque)
+AtualizarEstoqueML_ComVariacao(ID_Produto, novo_estoque)
 #AtualizarEstoqueML(ID_Produto, novo_estoque)
-PuxarEstoqueML(ID_Produto)
+#PuxarEstoqueML(ID_Produto)
 
 #puxar_dados(ID_Produto)
 #atualizar_estoque(ID_Produto, novo_estoque)
