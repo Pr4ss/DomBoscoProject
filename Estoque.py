@@ -12,6 +12,7 @@ def PuxarEstoqueML(ID_Produto):
     resposta = requests.get(url)
     dados_produto = resposta.json()
     EstoqueML = dados_produto["initial_quantity"]
+    variations = dados_produto.get("variations")
     return EstoqueML
 
 def AtualizarEstoqueML(ID_Produto, novo_estoque):
@@ -81,19 +82,21 @@ def atualizar_estoque(ID_Produto, novo_estoque):
     url = f"https://api.mercadolibre.com/items/{ID_Produto}"
     resposta = requests.get(url)
     dados_produto = resposta.json()
-    sold_quantity = dados_produto.get("sold_quantity")
-    if sold_quantity == 0:
-        FecharAnuncioML(ID_Produto)
-        upd_NoSales_NoVariations(ID_Produto, novo_estoque)
+    variations = dados_produto.get("variations")
+    if not variations:
+        AtualizarEstoqueML(ID_Produto, novo_estoque)
+    else:
+        AtualizarEstoqueML_ComVariacao(ID_Produto, novo_estoque)
 
-ID_Produto = "MLB4102962668"
-novo_estoque = 10
-#novo_status = input("Novo status: ")
+# Martelo: MLB3470037325 
+# Relógios: MLB4102962668
+
+ID_Produto = "MLB3470037325"
+novo_estoque = 13
 #ID_Vendedor = input("ID do vendedor: ")
            
-AtualizarEstoqueML_ComVariacao(ID_Produto, novo_estoque)
+#AtualizarEstoqueML_ComVariacao(ID_Produto, novo_estoque)
 #AtualizarEstoqueML(ID_Produto, novo_estoque)
 #PuxarEstoqueML(ID_Produto)
 
-#puxar_dados(ID_Produto)
-#atualizar_estoque(ID_Produto, novo_estoque)
+atualizar_estoque(ID_Produto, novo_estoque)
