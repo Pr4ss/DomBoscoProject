@@ -91,8 +91,8 @@ def atualizar_estoque(ID_Produto, novo_estoque):
 # Martelo: MLB3470037325 
 # Relógios: MLB4102962668
 
-ID_Produto = input("ID: ")
-novo_estoque = int(input("Novo Estoque: "))
+#ID_Produto = input("ID: ")
+#ovo_estoque = int(input("Novo Estoque: "))
 
 #PuxarEstoqueML(ID_Produto)
 #atualizar_estoque(ID_Produto, novo_estoque)

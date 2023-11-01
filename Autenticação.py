@@ -1,12 +1,10 @@
 import requests
 
-# Dados do seu aplicativo do Mercado Livre
 
 client_id = 6879509485276765
 client_secret = "t3TezoMpOAnhJfIhXWnK7cJ2f2ryUl6o"
 redirect_uri = "https://localhost:3000/"
 
-# URL de autorização
 authorization_url = f'https://auth.mercadolivre.com.br/authorization?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}'
 
 
@@ -42,7 +40,7 @@ def primeiro_token(authorization_url):
 def obter_novo_token_acesso():
     url = "https://api.mercadolibre.com/oauth/token"
 
-    # Substitua as variáveis abaixo pelos valores corretos da sua aplicação e refresh token
+    #refresh token
     client_id = "6879509485276765"
     client_secret = "t3TezoMpOAnhJfIhXWnK7cJ2f2ryUl6o"
     refresh_token = "TG-64cbfb2baa3bd10001608932-323433124"
